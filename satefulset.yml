@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Satefulset
 metadata:
-  name: mysql
+  name: mysqldb
 spec:
   replicas: 1
   selector:
