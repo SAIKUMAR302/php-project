@@ -41,12 +41,14 @@ spec:
         - name: pvc-1
           mountPath: /var/lib/mysql
 
-  volumeClaimTemplates:
-  - metadata:
-      name: pvc-1
+    volumeClaimTemplates:
+        - metadata:
+            name: pvc-1
     spec:
-      accessModes:
+      storageClassName: gp2
+    accessModes:
       - ReadWriteOnce
-      resources:
-        requests:
+    resources:
+      requests:
+        storage: 2Gi
           storage: 2Gi
