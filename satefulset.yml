@@ -1,45 +1,52 @@
----
-apiVersion: v1
-kind: Satefulset
+apiVersion: apps/v1
+kind: StatefulSet
+
 metadata:
   name: mysqldb
+
 spec:
+  serviceName: mysqldb
   replicas: 1
+
   selector:
-    matchLables:
+    matchLabels:
       app: app-database
+
   template:
     metadata:
-      lables:
+      labels:
         app: app-database
+
     spec:
       containers:
-        - name: cdbont
-          image: saikumar1903/phpapp:dbimage
-          ports:
-            - containerPort: 3306
-        #secret Intergration
-          envFrom:
-            - sceretRef:
-              name: bankapp-db-secret
-        #Resource Quota
-          resources:
-            requests: 
-              cpu: "100m"
-              memory: "128Mi"
-            limits: 
-              cpu: "200m"
-              memory: "256Mi"
-          volumeMounts:
-            - name: pvc-1
-              mountPath: /var/lib/mysql
+      - name: dbcont
+        image: saikumar1903/phpapp:dbimage
 
-          volumeClaimTemplates:
-            - metadata:
-                name: pvc-1
-              spec: 
-                accessMode:
-                  - ReadWriteOnce
-                resource:
-                  requests:
-                    storage: 2Gi
+        ports:
+        - containerPort: 3306
+
+        envFrom:
+        - secretRef:
+            name: bankapp-db-secret
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+
+        volumeMounts:
+        - name: pvc-1
+          mountPath: /var/lib/mysql
+
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-1
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
